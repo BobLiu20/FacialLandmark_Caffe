@@ -1,0 +1,14 @@
+average_loss: 100
+base_lr: 0.0001
+display: 100
+gamma: 0.1
+iter_size: 1
+lr_policy: "fixed"
+max_iter: 100000
+momentum: 0.9
+test_initialization: false
+test_interval: 50000000
+test_iter: 500
+net: "train.prototxt"
+weight_decay: 0.0005
+snapshot_prefix: "../model/"
