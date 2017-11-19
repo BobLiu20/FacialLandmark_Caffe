@@ -25,12 +25,12 @@ for idx, im_path in enumerate(os.listdir(img_folder)):
         print "Invaild image: ", im_path
         continue
     # preprocess
-    im_resize = cv2.resize(im, net.blobs['data'].data.shape[2:])
-    im_resize = np.transpose(im_resize, (2, 0, 1))
-    im_resize = im_resize.astype(np.float32)
-    im_resize = im_resize/127.5-1.0
+    im = cv2.resize(im, net.blobs['data'].data.shape[2:])
+    im_ = np.transpose(im, (2, 0, 1))
+    im_ = im_.astype(np.float32)
+    im_ = im_/127.5-1.0
     # feet forward
-    net.blobs['data'].data[0,...] = im_resize
+    net.blobs['data'].data[0,...] = im_
     out = net.forward()
     output = net.blobs[net.blobs.keys()[-1]].data
     output = output.reshape((5, 2))

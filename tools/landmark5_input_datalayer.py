@@ -1,11 +1,12 @@
 # by Bob in 20170326
+import caffe
 import numpy as np
 import cv2
-import caffe
 import os
 import string, random
 
 from augumentation import pts_augumentation
+from landmark5_reader import reader_alfw, reader_celeba
 
 class ImageInputDataLayer(caffe.Layer):
     def setup(self, bottom, top):
@@ -56,6 +57,7 @@ class ImageInputDataLayer(caffe.Layer):
 class BatchLoader(object):
     def __init__(self, params, debug=False):
         self.im_shape = params['im_shape']
+        self.dataset = params.get('dataset', ['alfw'])
         self.debug = debug
 
         self.image_generator = self.__image_generator()
@@ -67,34 +69,41 @@ class BatchLoader(object):
         return self.image_generator.next()
 
     def __image_generator(self):
-        datasetPath = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../dataset')
-        lines = open("%s/trainImageList.txt"%(datasetPath)).readlines()
+        readers = []
+        if 'alfw' in self.dataset:
+            readers.append(reader_alfw)
+        if 'celeba' in self.dataset:
+            readers.append(reader_celeba)
+        if len(readers) == 0:
+            raise Exception("No reader set...")
+        errCount = 0
         while True:
-            np.random.shuffle(lines)
-            for line in lines:
-                line = line.split()
-                path = line[0]
-                facePos = map(int, [line[1], line[3], line[2], line[4]]) # x1,y1,x2,y2
-                landmark5 = map(float, line[5:]) # x1,y1,...,x5,y5
-                #landmark5 = np.array(landmark5, dtype=np.float32).reshape(5, 2)
-                #landmark5[:,0] = (landmark5[:, 0] - float(facePos[0])) / float(facePos[2]-facePos[0])
-                #landmark5[:,1] = (landmark5[:, 1] - float(facePos[1])) / float(facePos[3]-facePos[1])
-                im = cv2.imread(os.path.join(datasetPath, path))
-                if im is None:
-                    continue
-                #_im = im[facePos[1]:facePos[3], facePos[0]:facePos[2]]
-
-                bbox = [facePos[0], facePos[1], facePos[2]-facePos[0], facePos[3]-facePos[1]]
-                _im, landmark5 = pts_augumentation(im, landmark5, bbox, self.im_shape[0], 5, debug=self.debug)
-
-                #_im = cv2.resize(_im, self.im_shape)
-                _im = np.transpose(_im, (2, 0, 1))
-                _im = _im.astype(np.float32)
-                _im = _im/127.5-1.0
-                _label = landmark5.reshape(10)
-                yield _im, _label
+            for reader in readers:
+                for im, landmark5, bbox in reader():
+                    _im, _landmark5 = pts_augumentation(im, landmark5, bbox, self.im_shape[0], 5, debug=self.debug)
+                    if not (np.all(_landmark5 <= 1.0) and np.all(_landmark5 >=0.0)):
+                        errCount += 1
+                        if errCount % 10 == 9:
+                            print "bad landmark encounter count: %d"%errCount
+                        continue
+                    errCount = 0
+                    _im = np.transpose(_im, (2, 0, 1))
+                    _im = _im.astype(np.float32)
+                    _im = _im/127.5-1.0
+                    _label = _landmark5.reshape(10)
+                    yield _im, _label
 
 if __name__ == "__main__":
-    a = BatchLoader({"im_shape": (40, 40)}, debug=True)
+    a = BatchLoader({"im_shape": (128, 128), "dataset": ['celeba']}, debug=True)
     print a.load_next_image()
+    print a.load_next_image()
+    print a.load_next_image()
+    print a.load_next_image()
+    print a.load_next_image()
+    print a.load_next_image()
+    print a.load_next_image()
+    print a.load_next_image()
+    #a = BatchLoader({"im_shape": (40, 40), "dataset": ['alfw', 'celeba']}, debug=False)
+    #while True:
+    #    a.load_next_image()
 

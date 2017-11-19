@@ -91,6 +91,7 @@ def pts_augumentation(img_t, pts_t, bbox, img_size, num_pts, debug=False):
     # rotation
     c_x, c_y = get_rotation_center(x, y, w, h)
     angle = random.randint(-10, 10)
+    #angle = random.randint(-180, 180)
     M = cv2.getRotationMatrix2D(tuple((c_x, c_y)), angle, 1)
     img_t = cv2.warpAffine(img_t, M, (width_t, height_t))
     b = np.ones((pts_t.shape[0], 1))

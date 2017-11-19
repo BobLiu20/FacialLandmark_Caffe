@@ -2,6 +2,7 @@
 __pycache__/
 *.py[cod]
 *$py.class
+*.swp
 
 # C extensions
 *.so
@@ -99,3 +100,10 @@ ENV/
 
 # mypy
 .mypy_cache/
+
+
+dataset/lfw_5590
+dataset/net_7876
+dataset/testImageList.txt
+dataset/trainImageList.txt
+model/net1/_iter_100000.caffemodel

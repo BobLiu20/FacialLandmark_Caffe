@@ -1,6 +1,6 @@
 # The train/test net protocol buffer definition
 # this follows "ADAM: A METHOD FOR STOCHASTIC OPTIMIZATION"
-net: "training/net2_0/vanilla_train.prototxt"
+net: "training/net2/vanilla_train.prototxt"
 type: "Adam"
 test_initialization: false
 test_iter: 1000
@@ -17,6 +17,6 @@ display: 100
 max_iter: 1400000
 # snapshot intermediate results
 snapshot: 5000
-snapshot_prefix: "model/net2_0/"
+snapshot_prefix: "model/net2/"
 # solver mode: CPU or GPU
 solver_mode: GPU

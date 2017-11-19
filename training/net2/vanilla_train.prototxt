@@ -14,7 +14,7 @@ layer {
     # the layer name -- the class name in the module
     layer: 'ImageInputDataLayer'
     # parameter
-    param_str: '{"batch_size":128, "im_shape":(40, 40)}'
+    param_str: '{"batch_size":128, "im_shape":(40, 40), "dataset": ["celeba"]}'
   }
 }
 
