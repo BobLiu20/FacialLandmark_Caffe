@@ -5,14 +5,16 @@
  * Net2: [TCNN: Facial Landmark Detection with Tweaked Convolutional Neural Networks](http://www.openu.ac.il/home/hassner/projects/tcnn_landmarks/)
 
 ### How to prepare dataset
-Just enter dataset folder and run script to get training data
- ```
- cd dataset
- python get_dataset.py
- ```
+ * Please download [CelebA](http://mmlab.ie.cuhk.edu.hk/projects/CelebA.html) dataset
+ * change input path to your dataset path in train.prototxt file.
 
 ### How to training
-Please run caffe command in the root of this project.
+Please run these command in the root of this project.
+ **Note**: Please change parameter in train.prototxt. such as process num and buffer2memory!
+ * set env
+ ```
+ export PYTHONPATH=`pwd`/common/:$PYTHONPATH
+ ```
  * train net1
  ```
  caffe train --solver=training/net1/solver.prototxt --gpu=0

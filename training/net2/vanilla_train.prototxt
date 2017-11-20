@@ -5,16 +5,34 @@ layer {
   name: 'data'
   top: 'X'
   top: 'landmarks'
-  # include {
-  #   phase: TRAIN
-  # }
+  include {
+    phase: TRAIN
+  }
   python_param {
     # the module name -- usually the filename -- that needs to be in $PYTHONPATH
-    module: 'tools.landmark5_input_datalayer'
+    module: 'landmark_input_datalayer'
+    # the layer name -- the class name in the module
+    layer: 'ImageInputDataLayer'
+    # parameter.
+    param_str: '{"batch_size":512, "img_size":128, "need_reader":True,"landmark_type":5,"process_num":20,"buffer2memory":True,"max_angle":10,"img_format":"RGB","max_epoch":1000,"input_paths":"/world/data-c9/liubofang/dataset_original/CelebA/full_path_zf_bbox_pts.txt"}'
+  }
+}
+
+layer {
+  type: 'Python'
+  name: 'data'
+  top: 'X'
+  top: 'landmarks'
+  include {
+    phase: TEST
+  }
+  python_param {
+    # the module name -- usually the filename -- that needs to be in $PYTHONPATH
+    module: 'landmark_input_datalayer'
     # the layer name -- the class name in the module
     layer: 'ImageInputDataLayer'
     # parameter
-    param_str: '{"batch_size":128, "im_shape":(40, 40), "dataset": ["celeba"]}'
+    param_str: '{"batch_size":128, "img_size":128, "need_reader":False}'
   }
 }
 

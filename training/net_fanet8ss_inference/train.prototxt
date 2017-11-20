@@ -1,4 +1,4 @@
-name: "Landmark5_face"
+name: "fanet8ss_inference"
 
 layer {
   type: 'Python'
@@ -35,6 +35,7 @@ layer {
     param_str: '{"batch_size":128, "img_size":128, "need_reader":False}'
   }
 }
+
 layer {
   name: "Convolution1"
   type: "Convolution"
@@ -44,19 +45,19 @@ layer {
     lr_mult: 1
   }
   param {
-    lr_mult: 2
+    lr_mult: 1
   }
   convolution_param {
-    num_output: 24
+    num_output: 16
     pad: 1
     kernel_size: 3
-    group: 1
-    stride: 1
+    stride: 2
     weight_filler {
       type: "xavier"
     }
     bias_filler {
       type: "constant"
+      value: 0
     }
   }
 }
@@ -66,45 +67,34 @@ layer {
   bottom: "Convolution1"
   top: "Convolution1"
 }
-layer {
-  name: "Pooling1"
-  type: "Pooling"
-  bottom: "Convolution1"
-  top: "Pooling1"
-  pooling_param {
-    pool: MAX
-    kernel_size: 2
-    stride: 2
-  }
-}
 
 layer {
   name: "Convolution2"
   type: "Convolution"
-  bottom: "Pooling1"
+  bottom: "Convolution1"
   top: "Convolution2"
   param {
     lr_mult: 1
   }
   param {
-    lr_mult: 2
+    lr_mult: 1
   }
   convolution_param {
-    num_output: 64
+    num_output: 32
     pad: 1
     kernel_size: 3
-    group: 1
     stride: 1
     weight_filler {
       type: "xavier"
     }
     bias_filler {
       type: "constant"
+      value: 0
     }
   }
 }
 layer {
-  name: "ReLU1"
+  name: "ReLU2"
   type: "ReLU"
   bottom: "Convolution2"
   top: "Convolution2"
@@ -119,69 +109,56 @@ layer {
     lr_mult: 1
   }
   param {
-    lr_mult: 2
+    lr_mult: 1
   }
   convolution_param {
-    num_output: 64
+    num_output: 32
     pad: 1
     kernel_size: 3
-    group: 1
-    stride: 1
+    stride: 3
     weight_filler {
       type: "xavier"
     }
     bias_filler {
       type: "constant"
+      value: 0
     }
   }
 }
 layer {
-  name: "ReLU1"
+  name: "ReLU3"
   type: "ReLU"
   bottom: "Convolution3"
   top: "Convolution3"
 }
 
 layer {
-  name: "Pooling2"
-  type: "Pooling"
-  bottom: "Convolution3"
-  top: "Pooling2"
-  pooling_param {
-    pool: MAX
-    kernel_size: 2
-    stride: 2
-  }
-}
-
-####
-layer {
   name: "Convolution4"
   type: "Convolution"
-  bottom: "Pooling2"
+  bottom: "Convolution3"
   top: "Convolution4"
   param {
     lr_mult: 1
   }
   param {
-    lr_mult: 2
+    lr_mult: 1
   }
   convolution_param {
-    num_output: 64
+    num_output: 32
     pad: 1
     kernel_size: 3
-    group: 1
     stride: 1
     weight_filler {
       type: "xavier"
     }
     bias_filler {
       type: "constant"
+      value: 0
     }
   }
 }
 layer {
-  name: "ReLU1"
+  name: "ReLU4"
   type: "ReLU"
   bottom: "Convolution4"
   top: "Convolution4"
@@ -196,69 +173,57 @@ layer {
     lr_mult: 1
   }
   param {
-    lr_mult: 2
+    lr_mult: 1
   }
   convolution_param {
-    num_output: 64
+    num_output: 32
     pad: 1
     kernel_size: 3
-    group: 1
-    stride: 1
+    stride: 3
     weight_filler {
       type: "xavier"
     }
     bias_filler {
       type: "constant"
+      value: 0
     }
   }
 }
 layer {
-  name: "ReLU1"
+  name: "ReLU5"
   type: "ReLU"
   bottom: "Convolution5"
   top: "Convolution5"
 }
 
-layer {
-  name: "Pooling3"
-  type: "Pooling"
-  bottom: "Convolution5"
-  top: "Pooling3"
-  pooling_param {
-    pool: MAX
-    kernel_size: 2
-    stride: 2
-  }
-}
-####
-
+# 6-7
 layer {
   name: "Convolution6"
   type: "Convolution"
-  bottom: "Pooling3"
+  bottom: "Convolution5"
   top: "Convolution6"
   param {
     lr_mult: 1
   }
   param {
-    lr_mult: 2
+    lr_mult: 1
   }
   convolution_param {
-    num_output: 128
+    num_output: 64
     pad: 1
     kernel_size: 3
-    group: 1
     stride: 1
     weight_filler {
       type: "xavier"
     }
     bias_filler {
       type: "constant"
+      value: 0
     }
   }
 }
 layer {
-  name: "ReLU1"
+  name: "ReLU6"
   type: "ReLU"
   bottom: "Convolution6"
   top: "Convolution6"
@@ -273,98 +238,108 @@ layer {
     lr_mult: 1
   }
   param {
-    lr_mult: 2
+    lr_mult: 1
+  }
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 3
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "ReLU7"
+  type: "ReLU"
+  bottom: "Convolution7"
+  top: "Convolution7"
+}
+
+# 8
+layer {
+  name: "Convolution8"
+  type: "Convolution"
+  bottom: "Convolution7"
+  top: "Convolution8"
+  param {
+    lr_mult: 1
+  }
+  param {
+    lr_mult: 1
   }
   convolution_param {
     num_output: 128
     pad: 1
     kernel_size: 3
-    group: 1
     stride: 1
     weight_filler {
       type: "xavier"
     }
     bias_filler {
       type: "constant"
+      value: 0
     }
   }
 }
 layer {
-  name: "ReLU1"
+  name: "ReLU8"
   type: "ReLU"
-  bottom: "Convolution7"
-  top: "Convolution7"
+  bottom: "Convolution8"
+  top: "Convolution8"
 }
 
+# max pool
 layer {
-  name: "Pooling4"
+  name: "Pooling1"
   type: "Pooling"
-  bottom: "Convolution7"
-  top: "Pooling4"
+  bottom: "Convolution8"
+  top: "Pooling1"
   pooling_param {
     pool: MAX
     kernel_size: 2
     stride: 2
   }
 }
-####
 
+# flatten
 layer {
-  name: "Convolution8"
-  type: "Convolution"
-  bottom: "Pooling4"
-  top: "Convolution8"
-  param {
-    lr_mult: 1
-  }
-  param {
-    lr_mult: 2
-  }
-  convolution_param {
-    num_output: 256
-    pad: 1
-    kernel_size: 3
-    group: 1
-    stride: 1
-    weight_filler {
-      type: "xavier"
-    }
-    bias_filler {
-      type: "constant"
-    }
-  }
-}
-layer {
-  name: "ReLU1"
-  type: "ReLU"
-  bottom: "Convolution8"
-  top: "Convolution8"
+  name: "Flatten1"
+  type: "Flatten"
+  bottom: "Pooling1"
+  top: "Flatten1"
 }
 
-###
+# fc
 layer {
   name: "InnerProduct1"
   type: "InnerProduct"
-  bottom: "Convolution8"
+  bottom: "Flatten1"
   top: "InnerProduct1"
   param {
     lr_mult: 1
   }
   param {
-    lr_mult: 2
+    lr_mult: 1
   }
   inner_product_param {
-    num_output: 1024
+    num_output: 512
     weight_filler {
       type: "xavier"
     }
     bias_filler {
       type: "constant"
+      value: 0
     }
   }
 }
 layer {
-  name: "ReLU6"
+  name: "ReLU_ip1"
   type: "ReLU"
   bottom: "InnerProduct1"
   top: "InnerProduct1"
@@ -379,7 +354,7 @@ layer {
     lr_mult: 1
   }
   param {
-    lr_mult: 2
+    lr_mult: 1
   }
   inner_product_param {
     num_output: 10
@@ -388,8 +363,15 @@ layer {
     }
     bias_filler {
       type: "constant"
+      value: 0
     }
   }
+}
+layer {
+  name: "Sigmoid_fc2"
+  type: "Sigmoid"
+  bottom: "InnerProduct2"
+  top: "InnerProduct2"
 }
 
 layer {

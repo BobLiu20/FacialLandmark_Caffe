@@ -7,12 +7,12 @@ max_iter: 100000
 test_initialization: false
 test_interval: 50000000
 test_iter: 500
-net: "training/net1/train.prototxt"
+net: "training/net_fanet8ss_inference/train.prototxt"
 weight_decay: 0.0005
-snapshot_prefix: "model/net1/"
+snapshot_prefix: "model/net_fanet8ss_inference/"
 solver_mode: GPU
 
-type: Adam
+type: "Adam"
 #solver_type: ADAM
 momentum: 0.9
 momentum2: 0.999

@@ -5,6 +5,10 @@ import sys
 import cv2
 import numpy as np
 
+MY_DIRNAME = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, os.path.join(MY_DIRNAME, '..', 'common'))
+from landmark_augment import LandmarkAugment
+
 if len(sys.argv) != 3:
     print "run python main.py xxx.caffemodel deploy.prototxt"
     sys.exit()
@@ -54,6 +58,7 @@ if __name__ == "__main__":
         sys.exit()
 
     predictor = Predictor(PATH_TO_DEPLOY_TXT, PATH_TO_WEIGHTS)
+    __landmark_augment = LandmarkAugment()
 
     errorPerLandmark = np.zeros(5, dtype ='f4')
     numCount = 0
@@ -62,17 +67,18 @@ if __name__ == "__main__":
     for line in open(os.path.join(DATA_PATH, "testImageList.txt")):
         line = line.split()
         path = line[0]
-        facePos = map(int, [line[1], line[3], line[2], line[4]]) # x1,y1,x2,y2
-        landmark5 = map(float, line[5:]) # x1,y1,...,x5,y5
-        landmark5 = np.array(landmark5, dtype=np.float32).reshape(5, 2)
-        landmark5[:,0] = (landmark5[:, 0] - float(facePos[0])) / float(facePos[2]-facePos[0])
-        landmark5[:,1] = (landmark5[:, 1] - float(facePos[1])) / float(facePos[3]-facePos[1])
-
         image = cv2.imread(os.path.join(DATA_PATH, path))
         if image is None:
             print "Skip ", path
             continue
-        faceImage = image[facePos[1]:facePos[3], facePos[0]:facePos[2]]
+        #facePos = map(int, [line[1], line[3], line[2], line[4]]) # x1,y1,x2,y2
+        landmark5 = map(float, line[5:]) # x1,y1,...,x5,y5
+        landmark5 = np.array(landmark5, dtype=np.float32).reshape(5, 2)
+        (x1, y1, x2, y2), _, _, _ = __landmark_augment.get_bbox_of_landmarks(image, landmark5, 3.0, 0.5)
+        landmark5[:,0] = (landmark5[:, 0] - float(x1)) / float(x2-x1)
+        landmark5[:,1] = (landmark5[:, 1] - float(y1)) / float(y2-y1)
+
+        faceImage = image[y1:y2, x1:x2]
 
         prediction = predictor.predict(faceImage)
         normlized = mseNormlized(landmark5.reshape([10]), prediction)
