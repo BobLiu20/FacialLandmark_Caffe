@@ -42,3 +42,6 @@ Please run these command in the root of this project.
 ### Reference
  [VanillaCNN](https://github.com/ishay2b/VanillaCNN)
 
+### Other DL framework
+ * The tensorlfow implementation to see [here](https://github.com/BobLiu20/FacialLandmark_TF)
+ * The mxnet implementation to see [here](https://github.com/BobLiu20/FacialLandmark_MXNet)
